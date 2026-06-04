@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriFlex - AI powered nutrition platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+            background: #000000;
+        }
+        
+        .splash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        
+        .logo-container {
+            width: 50rem;
+            height: 20rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logo-reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+            animation-delay: 0.2s;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo-icon {
+            font-size: 5rem;
+            color: #3bd533e4;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .splash-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .title-part {
+            display: inline-block;
+            animation: text-reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+            opacity: 0;
+        }
+        
+        .title-nutri {
+            animation-delay: 0.6s;
+        }
+        
+        .title-flex {
+            color: #3bd533e4;
+            text-shadow: 0 2px 4px rgba(0, 252, 76, 0.3), 0 5px 15px rgba(236, 19, 19, 0.2);
+            animation-delay: 0.7s;
+        }
+        
+        .splash-subtitle {
+            color: #666;
+            font-size: 1.125rem;
+            opacity: 0;
+            animation: loading-text-fade 0.8s ease-in-out forwards 1.2s;
+        }
+        
+        .loading-bar {
+            width: 16rem;
+            height: 0.25rem;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 0.125rem;
+            overflow: hidden;
+            margin-top: 1rem;
+            opacity: 0;
+            animation: loading-text-fade 0.8s ease-in-out forwards 1.2s;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background-color: #3bd533e4;
+            border-radius: 0.125rem;
+            transition: width 3s ease-in-out;
+        }
+
+        /* Animated Background for Splash */
+        .splash-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .splash-bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 213, 51, 0.1) 0%, rgba(59, 213, 51, 0) 70%);
+            animation: float 15s infinite linear;
+        }
+        
+        .splash-bg-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .splash-bg-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: -5s;
+        }
+        
+        .splash-bg-element:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 60%;
+            animation-delay: -10s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes logo-reveal {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes text-reveal {
+            0% {
+                transform: translateY(100%) scale(1.2) rotateX(-90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1) rotateX(0deg);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes loading-text-fade {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Main content initially hidden */
+        #main-content {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        .content-visible {
+            opacity: 1 !important;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            /* Header Mobile Styles */
+            header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                border-radius: 0;
+                padding: 1rem;
+                justify-content: space-between;
+                max-width: 100%;
+                transform: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+            
+            .logo {
+                display: flex;
+                align-items: center;
+            }
+            
+            .logo-image {
+                width: 10rem;
+                height: auto;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+                padding: 0.5rem;
+            }
+            
+            .mobile-menu {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                height: 0;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(10px);
+                overflow: hidden;
+                transition: height 0.3s ease;
+                z-index: 999;
+            }
+            
+            .mobile-menu.active {
+                height: calc(100vh - 100%);
+            }
+            
+            .mobile-nav-links {
+                display: flex;
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+            }
+            
+            .mobile-nav-link {
+                color: white;
+                text-decoration: none;
+                font-size: 1.2rem;
+                padding: 1rem;
+                border-radius: 8px;
+                transition: background-color 0.3s;
+            }
+            
+            .mobile-nav-link:hover {
+                background-color: rgba(59, 213, 51, 0.2);
+            }
+            
+            /* Hero Section Mobile */
+            .hero {
+                padding-top: 6rem;
+                min-height: auto;
+            }
+            
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+                text-align: center;
+            }
+            
+            .hero-subtitle {
+                text-align: center;
+                font-size: 1.1rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .app-mockup {
+                max-width: 250px;
+            }
+            
+            /* Features Section Mobile */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            /* How It Works Section Mobile */
+            .steps-line {
+                display: none;
+            }
+            
+            .step {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .step-number {
+                align-self: center;
+            }
+            
+            /* BMI Calculator Mobile */
+            .bmi-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            /* About Section Mobile */
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .team-members {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .team-members-left, .team-members-right {
+                max-width: 100%;
+            }
+            
+            /* Contact Section Mobile */
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            /* Footer Mobile */
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-brand {
+                align-items: center;
+            }
+            
+            .footer-tagline {
+                max-width: 100%;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            /* General Mobile Adjustments */
+            section {
+                padding: 3rem 0;
+                left: 0;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .section-subtitle {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .section-container {
+                padding: 0 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-calculate, .btn-reset {
+                width: 100%;
+            }
+            
+            /* Hide bubbles on mobile for performance */
+            .bubble-field {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat {
+                padding: 1rem;
+            }
+            
+            .feature-card, .step-content, .bmi-calculator, .bmi-result, 
+            .about-card, .team-card, .contact-card, .contact-form {
+                padding: 1.5rem;
+            }
+            
+            .logo-image {
+                width: 8rem;
+            }
+            
+            .app-mockup {
+                max-width: 200px;
+            }
+        }
+        
+        /* Additional Mobile Fixes */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 5rem;
+            }
+            
+            .floating-element {
+                display: none;
+            }
+            
+            .bg-gradient {
+                display: none;
+            }
+            
+            .hero-visual {
+                order: -1;
+            }
+            
+            .hero-content {
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-bg">
+            <div class="splash-bg-element"></div>
+            <div class="splash-bg-element"></div>
+            <div class="splash-bg-element"></div>
+        </div>
+        <div class="splash-container">
+            <div class="logo-container">
+                <img src="assets/splashlogo.png" alt="NutriFlex Logo" class="logo-icon">
+            </div>
+            <h1 class="splash-title">
+                <span class="title-part title-nutri">Nutri</span>
+                <span class="title-part title-flex">Flex</span>
+            </h1>
+            <p class="splash-subtitle">Crafting your personalized plan...</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <header>
+            <div class="logo">
+                <img src="assets/logo.png" alt="NutriFlex" class="logo-image">
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#process">How It Works</a>
+                <a href="#bmi">BMI Calculator</a>
+                <a href="#about">About Us</a>
+                <a href="#contact">Contact</a>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="mobile-menu" id="mobileMenu">
+                <div class="mobile-nav-links">
+                    <a href="#home" class="mobile-nav-link">Home</a>
+                    <a href="#features" class="mobile-nav-link">Features</a>
+                    <a href="#process" class="mobile-nav-link">How It Works</a>
+                    <a href="#bmi" class="mobile-nav-link">BMI Calculator</a>
+                    <a href="#about" class="mobile-nav-link">About Us</a>
+                    <a href="#contact" class="mobile-nav-link">Contact</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section with Star/Dot Field -->
+        <section id="home" class="hero">
+            <!-- Canvas-based star dot field -->
+            <canvas id="starCanvas"></canvas>
+            
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="greeting-badge">
+                        <span class="greeting-icon">👋</span>
+                        <span class="greeting-text">Meet NutriFlex</span>
+                    </div>
+                    
+                    <h1 class="hero-title">
+                        your AI companion for
+                        <span class="hero-gradient-block">
+                            <span class="hero-gradient">smart nutrition</span>
+                        </span>
+                        <span class="hero-gradient-block">
+                            <span class="hero-gradient">& mindful eating</span>
+                        </span>
+                    </h1>
+                    
+                    <p class="hero-subtitle">
+                        A personalized AI agent designed to support your wellness journey 
+                        with intelligent meal planning, fitness tracking, and compassionate guidance.
+                    </p>
+                    
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" id="downloadAppBtn">
+                            <i class="fas fa-download"></i>
+                            Discover More
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-play"></i>
+                            Watch Demo
+                        </button>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-value">5K+</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">1K+</div>
+                            <div class="stat-label">Recipes</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">4.8★</div>
+                            <div class="stat-label">App Rating</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <!-- Main floating image -->
+                    <div class="floating-image-container">
+                        <img src="assets/nutriflexfloat.png" alt="NutriFlex AI Assistant" class="floating-main-image">
+                        
+                        <!-- Decorative small bubbles around image -->
+                        <div class="image-bubbles">
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Glow effect -->
+                    <div class="hero-glow"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-gradient">Powerful Features</span>
+                    </h2>
+                    <p class="section-subtitle">
+                        Everything you need for a healthier lifestyle, powered by AI
+                    </p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="feature-title">Smart Meal Planning</h3>
+                        <p class="feature-description">
+                            AI-powered recommendations based on your goals, preferences, and dietary restrictions, providing weekly plans optimized for your success.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="feature-title">Doctor-Patient Portal</h3>
+                        <p class="feature-description">
+                            Professional nutritionists create personalized meal plans and track progress with medical oversight for optimal health outcomes.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3 class="feature-title">BMI & Calorie Calculator</h3>
+                        <p class="feature-description">
+                            Advanced Calculator that instantly compute your BMI and daily calorie needs, and receive actionable insights to help you achieve your health and wellness goals.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="feature-title">One-Click Shopping</h3>
+                        <p class="feature-description">
+                            Add ingredients directly to your cart while we find the nearest stores with the best prices and fastest delivery to your doorstep.
+                        </p>
+                    </div>
+
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3 class="feature-title">Gym Optimization</h3>
+                        <p class="feature-description">
+                            Pre and post-workout meal timing, bulking or cutting protocols, progress photos, and body composition tracking.
+                        </p>
+                    </div>
+
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Smart Substitutions</h3>
+                        <p class="feature-description">
+                            ML-powered algorithms suggest ingredient alternatives while maintaining identical nutritional targets so you never compromise on your macros.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="process" class="process">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-gradient">How the App Works</span>
+                    </h2>
+                    <p class="section-subtitle">
+                        Your journey to better nutrition in 5 simple steps
+                    </p>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="steps-line"></div>
+                    
+                    <div class="step fade-in">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Enter Personal Details</h3>
+                            <p class="step-description">
+                                Add your age, weight, height, fitness goals, and dietary preferences
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="step fade-in">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Get AI Suggested Recipes</h3>
+                            <p class="step-description">
+                                Our AI analyzes your profile and suggests personalized meal plans
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="step fade-in">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Add Ingredients via +/-</h3>
+                            <p class="step-description">
+                                Customize portions and ingredients with simple plus/minus controls
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="step fade-in">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Save Recipe</h3>
+                            <p class="step-description">
+                                Save your customized meal plans for quick access anytime
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="step fade-in">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Checkout & Track Delivery</h3>
+                            <p class="step-description">
+                                Order ingredients and track delivery from nearest shops in real-time
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BMI Calculator Section -->
+        <section id="bmi" class="bmi">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-gradient">BMI & Calorie Calculator</span>
+                    </h2>
+                    <p class="section-subtitle">
+                        Try our interactive BMI calculator to get personalized recommendations
+                    </p>
+                </div>
+                
+                <div class="bmi-container">
+                    <div class="bmi-calculator slide-in-left">
+                        <div class="bmi-header">
+                            <div class="bmi-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3 class="bmi-title">Calculate Your BMI</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" id="heightInput" class="form-input" placeholder="Enter your height">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" id="weightInput" class="form-input" placeholder="Enter your weight">
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button id="calculateBtn" class="btn-calculate">Calculate</button>
+                            <button id="resetBtn" class="btn-reset">Reset</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bmi-result slide-in-right">
+                        <div id="bmiPlaceholder" class="bmi-placeholder">
+                            <div class="placeholder-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3 class="placeholder-title">Ready to Calculate?</h3>
+                            <p class="placeholder-text">
+                                Enter your height and weight to get your personalized BMI and calorie recommendations
+                            </p>
+                        </div>
+                        
+                        <div id="bmiResult" class="bmi-result-content" style="display: none;">
+                            <div class="bmi-display">
+                                <div class="bmi-circle">
+                                    <div id="bmiValue" class="bmi-value">22.5</div>
+                                    <div class="bmi-label">BMI</div>
+                                </div>
+                                <h3 id="bmiCategory" class="bmi-category">Normal Weight</h3>
+                            </div>
+                            
+                            <div class="bmi-stats">
+                                <div class="bmi-stat">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-burn"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-label">Recommended Daily Calories</div>
+                                        <div id="caloriesValue" class="stat-value">2200 kcal</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bmi-stat">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-bullseye"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-label">Your Health Status</div>
+                                        <div id="healthStatus" class="stat-value">Normal Weight</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bmi-additional-info">
+                                <p class="bmi-info-text">
+                                    More features like Dietary Preferences, Activity Level and Special Health Conditions will be considered in the mobile app !
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-gradient">About NutriFlex</span>
+                    </h2>
+                    <p class="section-subtitle">
+                        Transforming lives through smart nutrition and fitness technology
+                    </p>
+                </div>
+                
+                <div class="about-container">
+                    <div class="about-content">
+                        <div class="about-card slide-in-left">
+                            <h3 class="about-title">Our Mission</h3>
+                            <p class="about-text">
+                                NutriFlex is dedicated to revolutionizing the way people approach nutrition and fitness. 
+                                We believe that everyone deserves access to personalized, science-backed meal planning 
+                                that fits their unique lifestyle and goals.
+                            </p>
+                            <p class="about-text">
+                                Built specifically for gym enthusiasts and health-conscious individuals, our AI-powered 
+                                platform combines cutting-edge technology with expert nutritionist guidance to deliver 
+                                customized meal plans that actually work.
+                            </p>
+                            <p class="about-text">
+                                Join thousands of users who have transformed their health journey with NutriFlex – 
+                                your personal nutrition assistant that grows smarter with every meal.
+                            </p>
+                        </div>
+                        
+                        <div class="about-stats">
+                            <div class="about-stat fade-in">
+                                <div class="about-stat-value">5K+</div>
+                                <div class="about-stat-label">Happy Users</div>
+                            </div>
+                            <div class="about-stat fade-in">
+                                <div class="about-stat-value">1K+</div>
+                                <div class="about-stat-label">Recipes</div>
+                            </div>
+                            <div class="about-stat fade-in">
+                                <div class="about-stat-value">95%</div>
+                                <div class="about-stat-label">Success Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card slide-in-right">
+                        <div class="team-profile">
+                            <h3 class="about-title">Our Team</h3>
+                            <p class="about-text">
+                                The Nutrition Navigators team is your dedicated crew on the journey to better health. We are a diverse group united by a single goal: to build an intuitive app that cuts through the confusion of dieting. With NutriFlex, we've channeled our skills in technology and nutrition to create a smart companion that empowers your every decision.
+                            </p>
+
+                            <div class="team-members">
+                                <div class="team-members-left">
+                                    <div class="team-member">
+                                        <h4 class="member-name">Matheesha Thamel</h4>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5c8c4d1cdc0c0d6cdc48b9795979195959d96e5ccccd18bc4c68bc9ce">[email&#160;protected]</a></p>
+                                    </div>
+                                    <div class="team-member">
+                                        <h4 class="member-name">Senuja Rasmina</h4>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a594f445f404b04181a181e181a131f6a43435e044b49044641">[email&#160;protected]</a></p>
+                                    </div>
+                                    <div class="team-member">
+                                        <h4 class="member-name">Abdul Malik</h4>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e333f323735706c6e6c6a6f6d6d6c1e37372a703f3d703235">[email&#160;protected]</a></p>
+                                    </div>
+                                </div>
+                                <div class="team-members-right">
+                                    <div class="team-member">
+                                        <h4 class="member-name">Kavindu Chandupa</h4>
+                                        <p class="member-email"><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e9e3f4ebece6f7acb0b2b0b6b3bbb1bbc2ebebf6ace3e1aceee9">[email&#160;protected]</a></p>
+                                    </div>
+                                    <div class="team-member">
+                                        <h4 class="member-name">Mevindu Kalubowila</h4>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a474f5c43444e5f04181a181e1a19191d6a43435e044b49044641">[email&#160;protected]</a></p>
+                                    </div>
+                                    <div class="team-member">
+                                        <h4 class="member-name">Hasith Witharama</h4>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8be3eaf8e2ffe3a5b9bbb9b8bbbbbabacbe2e2ffa5eae8a5e7e0">[email&#160;protected]</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div class="team-social">
+                            <a href="/cdn-cgi/l/email-protection#49273c3d3b202f252c31672a26273d282a3d092e24282025672a2624" target="_blank" class="social-link">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                            <a href="https://github.com/kAvindu-gh/nutriflex.git" target="_blank" class="social-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-gradient">Get In Touch</span>
+                    </h2>
+                    <p class="section-subtitle">
+                        Have questions? We'd love to hear from you. Send us a message!
+                    </p>
+                </div>
+                
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <div class="contact-card slide-in-left">
+                            <h3 class="contact-title">Contact Information</h3>
+                            
+                            <div class="contact-items">
+                                <div class="contact-item-large">
+                                    <div class="contact-icon-large">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <div class="contact-type">Email</div>
+                                        <div class="contact-value"><a href="/cdn-cgi/l/email-protection#fc9289888e959a909984d29f9392889d9f88bc9b919d9590d29f9391" class="email-link"><span class="__cf_email__" data-cfemail="5b352e2f29323d373e23753834352f3a382f1b3c363a323775383436">[email&#160;protected]</span></a></div>
+                                        <div class="contact-note">Contact us via our Email</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item-large">
+                                    <div class="contact-icon-large">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <div class="contact-type">Phone</div>
+                                        <div class="contact-value">+94 77 819 8870</div>
+                                        <div class="contact-note">Matheesha Thamel</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item-large">
+                                    <div class="contact-icon-large">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <div class="contact-type">WhatsApp</div>
+                                        <div class="contact-value"><a href="https://wa.me/94710570295" target="_blank" class="whatsapp-link">+94 71 057 0295</a></div>
+                                        <div class="contact-note">Kavindu Chandupa</div>
+                                    </div>
+                                </div>
+                                
+                        
+                            </div>
+                        </div>
+                        
+                        <div class="social-card slide-in-left">
+                            <h4 class="social-title">Follow Us</h4>
+                            <div class="social-links">
+                                <a href="#" class="social-link-large">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                                <a href="#" class="social-link-large">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link-large">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-link-large">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form slide-in-right" id="contactFormSection">
+                        <h3 class="form-title">Send Us a Message</h3>
+                        
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" id="nameInput" class="form-input" placeholder="John Doe" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="emailInput" class="form-input" placeholder="john@example.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Message</label>
+                                <textarea id="messageInput" class="form-input" rows="5" placeholder="Tell us how we can help you..." required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-calculate" style="width: 100%;">
+                                <i class="fas fa-paper-plane"></i>
+                                Send Message
+                            </button>
+                        </form>
+                        
+                        <div id="formSuccess" class="form-success" style="display: none;">
+                            <div class="success-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h4 class="success-title">Message Sent!</h4>
+                            <p class="success-text">
+                                Thank you for reaching out. We'll get back to you soon!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <div class="logo-icon">
+                                <img src="assets/logo.png" alt="Nutriflex logo">
+                            </div>
+                        </div>
+                        <p class="footer-tagline">
+                            AI-powered personalized meal planning for fitness & wellness. 
+                            Transform your health journey with smart nutrition.
+                        </p>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-heading">Quick Links</h4>
+                        <a href="#home" class="footer-link">Home</a>
+                        <a href="#features" class="footer-link">Features</a>
+                        <a href="#process" class="footer-link">How It Works</a>
+                        <a href="#bmi" class="footer-link">BMI Calculator</a>
+                        <a href="#about" class="footer-link">About Us</a>
+                        <a href="#contact" class="footer-link">Contact</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-heading">Product</h4>
+                        <a href="#" class="footer-link">Features</a>
+                        <a href="#" class="footer-link">How It Works</a>
+                        <a href="#" class="footer-link">Pricing</a>
+                        <a href="#" class="footer-link">Blog</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-heading">Company</h4>
+                        <a href="#" class="footer-link">About Us</a>
+                        <a href="#" class="footer-link">Careers</a>
+                        <a href="#" class="footer-link">Contact</a>
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p class="copyright">
+                        &copy; 2025 NutriFlex. Made with <span class="footer-heart">&#10084;</span> by Nutrition Navigators
+                    </p>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Download App Popup -->
+        <div class="popup-modal" id="appPopup">
+            <div class="popup-content">
+                <div class="popup-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="popup-title">Coming Soon!</h3>
+                <p class="popup-message">
+                    The NutriFlex mobile app is currently in development. Stay tuned for the launch!
+                </p>
+                <button class="popup-btn" id="popupCloseBtn">Got it!</button>
+            </div>
+        </div>
+
+    </div><!-- end #main-content -->
+
+    <script src="script.js"></script>
+</body>
+</html>
