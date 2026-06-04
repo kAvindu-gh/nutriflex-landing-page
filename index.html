@@ -433,6 +433,11 @@
             .btn-calculate, .btn-reset {
                 width: 100%;
             }
+            
+            /* Hide bubbles on mobile for performance */
+            .bubble-field {
+                display: none;
+            }
         }
         
         @media (max-width: 480px) {
@@ -545,30 +550,41 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
+        <!-- Hero Section with Star/Dot Field -->
         <section id="home" class="hero">
-            <div class="bg-gradient bg-gradient-1"></div>
-            <div class="bg-gradient bg-gradient-2"></div>
+            <!-- Canvas-based star dot field -->
+            <canvas id="starCanvas"></canvas>
             
             <div class="hero-container">
                 <div class="hero-content">
+                    <div class="greeting-badge">
+                        <span class="greeting-icon">👋</span>
+                        <span class="greeting-text">Meet NutriFlex</span>
+                    </div>
+                    
                     <h1 class="hero-title">
-                        <span>NutriFlex</span>
-                        <span class="hero-gradient">Smart Meal Prep &</span>
-                        <span class="hero-gradient">Nutrition Assistant</span>
+                        your AI companion for
+                        <span class="hero-gradient-block">
+                            <span class="hero-gradient">smart nutrition</span>
+                        </span>
+                        <span class="hero-gradient-block">
+                            <span class="hero-gradient">& mindful eating</span>
+                        </span>
                     </h1>
+                    
                     <p class="hero-subtitle">
-                        AI-powered personalized meal planning for fitness & wellness
+                        A personalized AI agent designed to support your wellness journey 
+                        with intelligent meal planning, fitness tracking, and compassionate guidance.
                     </p>
                     
                     <div class="hero-buttons">
                         <button class="btn btn-primary" id="downloadAppBtn">
                             <i class="fas fa-download"></i>
-                            Download App
+                            Discover More
                         </button>
                         <button class="btn btn-secondary">
                             <i class="fas fa-play"></i>
-                            Try Demo
+                            Watch Demo
                         </button>
                     </div>
                     
@@ -589,12 +605,23 @@
                 </div>
                 
                 <div class="hero-visual">
-                    <img src="assets/nutriflexfloat.png" alt="NutriFlex Mobile App" class="app-mockup">
-                    
-                    <div class="floating-element">
-                        <span>🥗</span>
+                    <!-- Main floating image -->
+                    <div class="floating-image-container">
+                        <img src="assets/nutriflexfloat.png" alt="NutriFlex AI Assistant" class="floating-main-image">
+                        
+                        <!-- Decorative small bubbles around image -->
+                        <div class="image-bubbles">
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                            <div class="image-bubble"></div>
+                        </div>
                     </div>
                     
+                    <!-- Glow effect -->
+                    <div class="hero-glow"></div>
                 </div>
             </div>
         </section>
@@ -892,29 +919,29 @@
                                 <div class="team-members-left">
                                     <div class="team-member">
                                         <h4 class="member-name">Matheesha Thamel</h4>
-                                        <p class="member-email"><i class="fas fa-envelope"></i>matheesha.20240083@iit.ac.lk</p>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5c8c4d1cdc0c0d6cdc48b9795979195959d96e5ccccd18bc4c68bc9ce">[email&#160;protected]</a></p>
                                     </div>
                                     <div class="team-member">
                                         <h4 class="member-name">Senuja Rasmina</h4>
-                                        <p class="member-email"><i class="fas fa-envelope"></i>senuja.20242095@iit.ac.lk</p>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a594f445f404b04181a181e181a131f6a43435e044b49044641">[email&#160;protected]</a></p>
                                     </div>
                                     <div class="team-member">
                                         <h4 class="member-name">Abdul Malik</h4>
-                                        <p class="member-email"><i class="fas fa-envelope"></i>malik.20241332@iit.ac.lk</p>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e333f323735706c6e6c6a6f6d6d6c1e37372a703f3d703235">[email&#160;protected]</a></p>
                                     </div>
                                 </div>
                                 <div class="team-members-right">
                                     <div class="team-member">
                                         <h4 class="member-name">Kavindu Chandupa</h4>
-                                        <p class="member-email"><i class="fas fa-envelope"></i> kavindu.20241939@iit.ac.lk</p>
+                                        <p class="member-email"><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e9e3f4ebece6f7acb0b2b0b6b3bbb1bbc2ebebf6ace3e1aceee9">[email&#160;protected]</a></p>
                                     </div>
                                     <div class="team-member">
                                         <h4 class="member-name">Mevindu Kalubowila</h4>
-                                        <p class="member-email"><i class="fas fa-envelope"></i>mevindu.20240337@iit.ac.lk</p>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a474f5c43444e5f04181a181e1a19191d6a43435e044b49044641">[email&#160;protected]</a></p>
                                     </div>
                                     <div class="team-member">
                                         <h4 class="member-name">Hasith Witharama</h4>
-                                        <p class="member-email"><i class="fas fa-envelope"></i>hasith.20230011@iit.ac.lk</p>
+                                        <p class="member-email"><i class="fas fa-envelope"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8be3eaf8e2ffe3a5b9bbb9b8bbbbbabacbe2e2ffa5eae8a5e7e0">[email&#160;protected]</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -924,7 +951,7 @@
                         
                         
                         <div class="team-social">
-                            <a href="mailto:nutriflex.contact@gmail.com" target="_blank" class="social-link">
+                            <a href="/cdn-cgi/l/email-protection#49273c3d3b202f252c31672a26273d282a3d092e24282025672a2624" target="_blank" class="social-link">
                                 <i class="fas fa-envelope"></i>
                             </a>
                             <a href="https://github.com/kAvindu-gh/nutriflex.git" target="_blank" class="social-link">
@@ -963,7 +990,7 @@
                                     </div>
                                     <div class="contact-details">
                                         <div class="contact-type">Email</div>
-                                        <div class="contact-value"><a href="mailto:nutriflex.contact@gmail.com" class="email-link">nutriflex.contact@gmail.com</a></div>
+                                        <div class="contact-value"><a href="/cdn-cgi/l/email-protection#fc9289888e959a909984d29f9392889d9f88bc9b919d9590d29f9391" class="email-link"><span class="__cf_email__" data-cfemail="5b352e2f29323d373e23753834352f3a382f1b3c363a323775383436">[email&#160;protected]</span></a></div>
                                         <div class="contact-note">Contact us via our Email</div>
                                     </div>
                                 </div>
@@ -1095,28 +1122,35 @@
                         <a href="#" class="footer-link">Terms of Service</a>
                     </div>
                 </div>
-                
+
                 <div class="footer-bottom">
-                    <p class="copyright">© 2025 NutriFlex. All Rights Reserved.</p>
                     <p class="copyright">
-                        Made by Team Nutrition Navigators
+                        &copy; 2025 NutriFlex. Made with <span class="footer-heart">&#10084;</span> by Nutrition Navigators
                     </p>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                    </div>
                 </div>
             </div>
         </footer>
 
-        <!-- Popup Modal -->
-        <div id="appPopup" class="popup-modal">
+        <!-- Download App Popup -->
+        <div class="popup-modal" id="appPopup">
             <div class="popup-content">
                 <div class="popup-icon">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-mobile-alt"></i>
                 </div>
-                <h3 class="popup-title">Coming Soon</h3>
-                <p class="popup-message">App will be publishing soon</p>
-                <button class="popup-btn" id="popupCloseBtn">Got it</button>
+                <h3 class="popup-title">Coming Soon!</h3>
+                <p class="popup-message">
+                    The NutriFlex mobile app is currently in development. Stay tuned for the launch!
+                </p>
+                <button class="popup-btn" id="popupCloseBtn">Got it!</button>
             </div>
         </div>
-    </div>
-    <script src="script.js"></script> 
+
+    </div><!-- end #main-content -->
+
+    <script src="script.js"></script>
 </body>
 </html>
