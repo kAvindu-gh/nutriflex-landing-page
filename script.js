@@ -1,562 +1,455 @@
-// Splash screen transition
-        document.addEventListener('DOMContentLoaded', function() {
-            const splashScreen = document.getElementById('splash-screen');
-            const mainContent = document.getElementById('main-content');
-            const progressBar = document.querySelector('.loading-progress');
-            
-            // Animate progress bar
-            setTimeout(() => {
-                progressBar.style.width = '100%';
-            }, 100);
-            
-            // Hide splash screen and show main content after 3 seconds
-            setTimeout(() => {
-                splashScreen.style.opacity = '0';
-                
-                setTimeout(() => {
-                    splashScreen.style.display = 'none';
-                    mainContent.classList.add('content-visible');
-                }, 800);
-            }, 3000);
 
-            // Rest of your existing JavaScript code...
-            // Download App Popup
-            const downloadAppBtn = document.getElementById('downloadAppBtn');
-            const appPopup = document.getElementById('appPopup');
-            const popupCloseBtn = document.getElementById('popupCloseBtn');
+/* ── 1. SPLASH SCREEN ── */
+(function initSplash() {
+  const splash = document.getElementById('splash');
+  const app    = document.getElementById('app');
+  if (!splash || !app) return;
 
-            downloadAppBtn.addEventListener('click', () => {
-                appPopup.classList.add('active');
-            });
+  // Start loading bar animation (CSS handles it via @keyframes fillBar)
+  // Dismiss splash after 3s
+  const SPLASH_DURATION = 3000;
+  setTimeout(() => {
+    splash.classList.add('done');
+    app.style.opacity = '0';
+    app.style.transition = 'opacity .7s ease';
+    // Small delay so splash fade starts first
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        app.style.opacity = '1';
+      }, 200);
+    });
+    // Remove from DOM after transition
+    setTimeout(() => splash.remove(), 800);
+  }, SPLASH_DURATION);
+})();
 
-            popupCloseBtn.addEventListener('click', () => {
-                appPopup.classList.remove('active');
-            });
 
-            // Close popup when clicking outside
-            appPopup.addEventListener('click', (e) => {
-                if (e.target === appPopup) {
-                    appPopup.classList.remove('active');
-                }
-            });
+/* ── 2. NAVBAR: scroll state + active link ── */
+(function initNavbar() {
+  const navbar = document.getElementById('navbar');
+  if (!navbar) return;
 
-            // Mobile Menu Toggle
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileMenu = document.getElementById('mobileMenu');
-            
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('active');
-            });
-            
-            // Close mobile menu when clicking on a link
-            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-            mobileNavLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('active');
-                });
-            });
-            
-            // Smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-            
-            // Scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-            
-            // Observe elements for animation
-            document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
-                observer.observe(el);
-            });
-            
-            // BMI Calculator
-            const heightInput = document.getElementById('heightInput');
-            const weightInput = document.getElementById('weightInput');
-            const calculateBtn = document.getElementById('calculateBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const bmiPlaceholder = document.getElementById('bmiPlaceholder');
-            const bmiResult = document.getElementById('bmiResult');
-            const bmiValue = document.getElementById('bmiValue');
-            const bmiCategory = document.getElementById('bmiCategory');
-            const caloriesValue = document.getElementById('caloriesValue');
-            const healthStatus = document.getElementById('healthStatus');
-            
-            calculateBtn.addEventListener('click', () => {
-                const height = parseFloat(heightInput.value);
-                const weight = parseFloat(weightInput.value);
-                
-                if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
-                    alert('Please enter valid height and weight values.');
-                    return;
-                }
-                
-                // Calculate BMI
-                const heightInMeters = height / 100;
-                const bmi = weight / (heightInMeters * heightInMeters);
-                const roundedBmi = Math.round(bmi * 10) / 10;
-                
-                // Determine category and calories
-                let category, calories;
-                
-                if (bmi < 18.5) {
-                    category = 'Underweight';
-                    calories = 2500;
-                } else if (bmi < 25) {
-                    category = 'Normal Weight';
-                    calories = 2200;
-                } else if (bmi < 30) {
-                    category = 'Overweight';
-                    calories = 1800;
-                } else {
-                    category = 'Obese';
-                    calories = 1600;
-                }
-                
-                // Update UI
-                bmiValue.textContent = roundedBmi;
-                bmiCategory.textContent = category;
-                caloriesValue.textContent = `${calories} kcal`;
-                healthStatus.textContent = category;
-                
-                // Show results
-                bmiPlaceholder.style.display = 'none';
-                bmiResult.style.display = 'block';
-            });
-            
-            resetBtn.addEventListener('click', () => {
-                heightInput.value = '';
-                weightInput.value = '';
-                bmiPlaceholder.style.display = 'flex';
-                bmiResult.style.display = 'none';
-            });
-            
-            // Contact Form
-            const contactForm = document.getElementById('contactForm');
-            const formSuccess = document.getElementById('formSuccess');
-            
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Get form values
-                const name = document.getElementById('nameInput').value;
-                const email = document.getElementById('emailInput').value;
-                const message = document.getElementById('messageInput').value;
-                
-                // Create mailto link with form data
-                const subject = encodeURIComponent(`New Message from ${name}`);
-                const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-                const mailtoLink = `mailto:flexnutri1@gmail.com?subject=${subject}&body=${body}`;
-                
-                // Open email client
-                window.location.href = mailtoLink;
-                
-                // Show success message
-                contactForm.style.display = 'none';
-                formSuccess.style.display = 'block';
-                
-                // Reset form after 3 seconds
-                setTimeout(() => {
-                    contactForm.reset();
-                    contactForm.style.display = 'block';
-                    formSuccess.style.display = 'none';
-                }, 3000);
-            });
-            
-            // Initialize animations on page load
-            window.addEventListener('load', () => {
-                // Trigger initial animations
-                document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
-                    if (el.getBoundingClientRect().top < window.innerHeight) {
-                        el.classList.add('visible');
-                    }
-                });
-            });
-            
-            // Splash screen transition
-document.addEventListener('DOMContentLoaded', function() {
-    const splashScreen = document.getElementById('splash-screen');
-    const mainContent = document.getElementById('main-content');
-    const progressBar = document.querySelector('.loading-progress');
-    
-    // Animate progress bar
+  // Scrolled state
+  const onScroll = () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Active link highlight via IntersectionObserver
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nl');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => io.observe(s));
+})();
+
+
+/* ── 3. MOBILE DRAWER ── */
+(function initDrawer() {
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  if (!burger || !drawer) return;
+
+  const toggle = () => {
+    const open = drawer.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+
+  burger.addEventListener('click', toggle);
+
+  // Close on link click
+  drawer.querySelectorAll('.dl, .drawer-cta').forEach(a => {
+    a.addEventListener('click', () => {
+      drawer.classList.remove('open');
+      burger.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Close on outside tap
+  document.addEventListener('click', e => {
+    if (!drawer.contains(e.target) && !burger.contains(e.target)) {
+      drawer.classList.remove('open');
+      burger.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+})();
+
+
+/* ── 4. STAR CANVAS ── */
+(function initStarCanvas() {
+  const canvas = document.getElementById('star-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W, H, stars = [];
+  const STAR_COUNT = 130;
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function makeStars() {
+    stars = Array.from({ length: STAR_COUNT }, () => ({
+      x:  Math.random() * W,
+      y:  Math.random() * H,
+      r:  Math.random() * 1.4 + 0.2,
+      a:  Math.random(),
+      da: (Math.random() * 0.004 + 0.001) * (Math.random() < .5 ? 1 : -1),
+      vx: (Math.random() - .5) * 0.08,
+      vy: (Math.random() - .5) * 0.08,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.x += s.vx; s.y += s.vy;
+      s.a += s.da;
+      if (s.a <= 0 || s.a >= 1) s.da *= -1;
+      if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
+      if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.a * 0.55})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  makeStars();
+  draw();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { resize(); makeStars(); }, 150);
+  });
+})();
+
+
+/* ── 5. REVEAL ON SCROLL ── */
+(function initReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const delay = e.target.dataset.delay || 0;
+        setTimeout(() => e.target.classList.add('in-view'), Number(delay));
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  els.forEach(el => io.observe(el));
+})();
+
+
+/* ── 6. BMI CALCULATOR ── */
+(function initBMI() {
+  const calcBtn     = document.getElementById('calcBtn');
+  const resetBtn    = document.getElementById('resetBtn');
+  const placeholder = document.getElementById('bmiPlaceholder');
+  const resultsView = document.getElementById('bmiResults');
+  const gaugeFill   = document.getElementById('gaugeFill');
+
+  if (!calcBtn) return;
+
+  // Goal tabs
+  let selectedGoal = 'maintain';
+  document.querySelectorAll('.goal-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.goal-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedGoal = btn.dataset.goal;
+    });
+  });
+
+  calcBtn.addEventListener('click', calculate);
+  resetBtn.addEventListener('click', reset);
+
+  // Also recalculate live as user types (optional)
+  ['bHeight','bWeight','bAge','bGender','bActivity'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => {
+      if (resultsView.style.display !== 'none') calculate();
+    });
+  });
+
+  function val(id) {
+    return parseFloat(document.getElementById(id)?.value) || 0;
+  }
+
+  function calculate() {
+    const height   = val('bHeight');   // cm
+    const weight   = val('bWeight');   // kg
+    const age      = val('bAge');
+    const gender   = document.getElementById('bGender')?.value;
+    const activity = parseFloat(document.getElementById('bActivity')?.value) || 1.55;
+
+    if (!height || !weight || height < 50 || weight < 10) {
+      shake(document.querySelector('.bmi-form-card'));
+      return;
+    }
+
+    // BMI
+    const hM  = height / 100;
+    const bmi = weight / (hM * hM);
+
+    // BMR (Mifflin-St Jeor)
+    let bmr;
+    if (gender === 'female') {
+      bmr = 10 * weight + 6.25 * height - 5 * (age || 25) - 161;
+    } else {
+      bmr = 10 * weight + 6.25 * height - 5 * (age || 25) + 5;
+    }
+    if (!age) bmr = 10 * weight + 6.25 * height - 5 * 25 + 5; // default age
+
+    let tdee = bmr * activity;
+
+    // Adjust for goal
+    if (selectedGoal === 'lose')   tdee -= 300;
+    if (selectedGoal === 'gain')   tdee += 300;
+    tdee = Math.round(tdee);
+
+    // Macros (standard split: 40C / 30P / 30F)
+    const carbs   = Math.round((tdee * 0.40) / 4);
+    const protein = Math.round((tdee * 0.30) / 4);
+    const fat     = Math.round((tdee * 0.30) / 9);
+
+    // Render
+    setEl('bmiNum',    bmi.toFixed(1));
+    setEl('mCalories', tdee + ' kcal');
+    setEl('mCarbs',    carbs + 'g');
+    setEl('mProtein',  protein + 'g');
+    setEl('mFat',      fat + 'g');
+
+    // Flash animation on number
+    const numEl = document.getElementById('bmiNum');
+    if (numEl) { numEl.classList.remove('flash'); void numEl.offsetWidth; numEl.classList.add('flash'); }
+
+    const cat = bmiCategory(bmi);
+    const badge = document.getElementById('bmiCatBadge');
+    badge.textContent = cat.label;
+    badge.className   = 'bmi-cat-badge ' + cat.cls;
+
+    animateGauge(bmi);
+
+    placeholder.style.display  = 'none';
+    resultsView.style.display  = 'flex';
+  }
+
+  function bmiCategory(bmi) {
+    if (bmi < 18.5) return { label: 'Underweight', cls: 'warning' };
+    if (bmi < 25)   return { label: 'Normal Weight', cls: '' };
+    if (bmi < 30)   return { label: 'Overweight', cls: 'warning' };
+    return { label: 'Obese', cls: 'danger' };
+  }
+
+  function animateGauge(bmi) {
+    if (!gaugeFill) return;
+    // Map BMI 10–40 → 0–1
+    const pct = Math.min(Math.max((bmi - 10) / 30, 0), 1);
+    const total = 283; // approx arc length for our SVG path
+    const offset = total * (1 - pct);
+
+    // Color by category
+    let color = '#22c55e';
+    if (bmi < 18.5 || (bmi >= 25 && bmi < 30)) color = '#f97316';
+    if (bmi >= 30) color = '#ef4444';
+
+    gaugeFill.style.transition = 'stroke-dashoffset .8s cubic-bezier(.22,1,.36,1), stroke .4s';
+    gaugeFill.style.strokeDashoffset = offset;
+    gaugeFill.style.stroke = color;
+  }
+
+  function reset() {
+    ['bHeight','bWeight','bAge'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    const gen = document.getElementById('bGender');
+    if (gen) gen.value = '';
+    const act = document.getElementById('bActivity');
+    if (act) act.value = '1.55';
+
+    document.querySelectorAll('.goal-tab').forEach(b => b.classList.remove('active'));
+    document.querySelector('.goal-tab[data-goal="maintain"]')?.classList.add('active');
+    selectedGoal = 'maintain';
+
+    placeholder.style.display  = 'flex';
+    resultsView.style.display  = 'none';
+  }
+
+  function setEl(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  function shake(el) {
+    if (!el) return;
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = 'shake .4s ease';
+  }
+})();
+
+
+/* ── 7. CONTACT FORM ── */
+(function initContactForm() {
+  const form    = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  if (!form || !success) return;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+
+    // Simulate async send — wire up a real endpoint or EmailJS here
     setTimeout(() => {
-        progressBar.style.width = '100%';
-    }, 100);
-    
-    // Hide splash screen and show main content after 3 seconds
-    setTimeout(() => {
-        splashScreen.style.opacity = '0';
-        
-        setTimeout(() => {
-            splashScreen.style.display = 'none';
-            mainContent.classList.add('content-visible');
-            // Initialize star field after splash screen is gone
-            initStarField();
-        }, 800);
-    }, 3000);
+      success.style.display = 'flex';
+      form.reset();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+      setTimeout(() => (success.style.display = 'none'), 6000);
+    }, 1400);
+  });
+})();
 
-    // Download App Popup
-    const downloadAppBtn = document.getElementById('downloadAppBtn');
-    const appPopup = document.getElementById('appPopup');
-    const popupCloseBtn = document.getElementById('popupCloseBtn');
 
-    if (downloadAppBtn) {
-        downloadAppBtn.addEventListener('click', () => {
-            appPopup.classList.add('active');
-        });
-    }
+/* ── 8. VIDEO MODAL ── */
+(function initVideoModal() {
+  const modal    = document.getElementById('videoModal');
+  const backdrop = document.getElementById('modalBackdrop');
+  const closeBtn = document.getElementById('modalClose');
+  const watchBtn = document.getElementById('watchDemoBtn');
+  const iframe   = document.getElementById('demoIframe');
+  const placeholder = document.getElementById('videoPlaceholder');
+  if (!modal) return;
 
-    if (popupCloseBtn) {
-        popupCloseBtn.addEventListener('click', () => {
-            appPopup.classList.remove('active');
-        });
-    }
 
-    // Close popup when clicking outside
-    if (appPopup) {
-        appPopup.addEventListener('click', (e) => {
-            if (e.target === appPopup) {
-                appPopup.classList.remove('active');
-            }
-        });
-    }
+  //yt embed url
+  const DEMO_SRC = 'https://www.youtube.com/embed/UEJMcwXHHX0?si=b536Vv3o-jajXB7w';
 
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-        });
-        
-        // Close mobile menu when clicking on a link
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-            });
-        });
+  function openModal() {
+    if (DEMO_SRC) {
+      iframe.src = DEMO_SRC;
+      placeholder.style.display = 'none';
+    } else {
+      placeholder.style.display = 'flex';
     }
-    
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-    // Scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe elements for animation
-    document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
-        observer.observe(el);
-    });
-    
-    // BMI Calculator
-    const heightInput = document.getElementById('heightInput');
-    const weightInput = document.getElementById('weightInput');
-    const calculateBtn = document.getElementById('calculateBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const bmiPlaceholder = document.getElementById('bmiPlaceholder');
-    const bmiResult = document.getElementById('bmiResult');
-    const bmiValue = document.getElementById('bmiValue');
-    const bmiCategory = document.getElementById('bmiCategory');
-    const caloriesValue = document.getElementById('caloriesValue');
-    const healthStatus = document.getElementById('healthStatus');
-    
-    if (calculateBtn) {
-        calculateBtn.addEventListener('click', () => {
-            const height = parseFloat(heightInput.value);
-            const weight = parseFloat(weightInput.value);
-            
-            if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
-                alert('Please enter valid height and weight values.');
-                return;
-            }
-            
-            // Calculate BMI
-            const heightInMeters = height / 100;
-            const bmi = weight / (heightInMeters * heightInMeters);
-            const roundedBmi = Math.round(bmi * 10) / 10;
-            
-            // Determine category and calories
-            let category, calories;
-            
-            if (bmi < 18.5) {
-                category = 'Underweight';
-                calories = 2500;
-            } else if (bmi < 25) {
-                category = 'Normal Weight';
-                calories = 2200;
-            } else if (bmi < 30) {
-                category = 'Overweight';
-                calories = 1800;
-            } else {
-                category = 'Obese';
-                calories = 1600;
-            }
-            
-            // Update UI
-            bmiValue.textContent = roundedBmi;
-            bmiCategory.textContent = category;
-            caloriesValue.textContent = `${calories} kcal`;
-            healthStatus.textContent = category;
-            
-            // Show results
-            bmiPlaceholder.style.display = 'none';
-            bmiResult.style.display = 'block';
-        });
-    }
-    
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            heightInput.value = '';
-            weightInput.value = '';
-            bmiPlaceholder.style.display = 'flex';
-            bmiResult.style.display = 'none';
-        });
-    }
-    
-    // Contact Form
-    const contactForm = document.getElementById('contactForm');
-    const formSuccess = document.getElementById('formSuccess');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('nameInput').value;
-            const email = document.getElementById('emailInput').value;
-            const message = document.getElementById('messageInput').value;
-            
-            // Create mailto link with form data
-            const subject = encodeURIComponent(`New Message from ${name}`);
-            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-            const mailtoLink = `mailto:flexnutri1@gmail.com?subject=${subject}&body=${body}`;
-            
-            // Open email client
-            window.location.href = mailtoLink;
-            
-            // Show success message
-            contactForm.style.display = 'none';
-            formSuccess.style.display = 'block';
-            
-            // Reset form after 3 seconds
-            setTimeout(() => {
-                contactForm.reset();
-                contactForm.style.display = 'block';
-                formSuccess.style.display = 'none';
-            }, 3000);
-        });
-    }
-    
-    // Initialize animations on page load
-    window.addEventListener('load', () => {
-        // Trigger initial animations
-        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
-            if (el.getBoundingClientRect().top < window.innerHeight) {
-                el.classList.add('visible');
-            }
-        });
-    });
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { if (iframe) iframe.src = ''; }, 300);
+  }
+
+  watchBtn?.addEventListener('click', e => { e.preventDefault(); openModal(); });
+  closeBtn?.addEventListener('click', closeModal);
+  backdrop?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+})();
+
+
+/* ── 9. SMOOTH SCROLL (fallback for older browsers) ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 62;
+    const top  = target.getBoundingClientRect().top + window.scrollY - navH;
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
 });
 
-// ===== CANVAS STAR/DOT FIELD WITH MOUSE FOLLOW =====
-function initStarField() {
-    const canvas = document.getElementById('starCanvas');
-    if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    const heroSection = document.getElementById('home');
-
-    // Resize canvas to match hero section
-    function resizeCanvas() {
-        canvas.width = heroSection.offsetWidth;
-        canvas.height = heroSection.offsetHeight;
+/* ── 10. SHAKE KEYFRAME (injected dynamically) ── */
+(function injectShake() {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
     }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+  `;
+  document.head.appendChild(style);
+})();
 
-    // Premium green color
-    const GREEN = '59, 213, 51';
-    const WHITE  = '255, 255, 255';
 
-    // Build star list
-    const STAR_COUNT = 220;
-    const stars = [];
+/* ── 11. HERO CURSOR PARALLAX ── */
+(function initParallax() {
+  const visual = document.querySelector('.hero-visual');
+  if (!visual) return;
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
 
-    for (let i = 0; i < STAR_COUNT; i++) {
-        const isGreen = Math.random() < 0.45; // ~45% green, 55% white
-        // Vary sizes: most are tiny (1-2 px), a few bigger (3-5 px)
-        const r = Math.random();
-        const radius = r < 0.6 ? 1 + Math.random() * 0.8      // tiny
-                     : r < 0.9 ? 1.8 + Math.random() * 1.2    // medium
-                     :           3 + Math.random() * 2;         // accent
+  hero.addEventListener('mousemove', e => {
+    const rect = hero.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const dx = (e.clientX - cx) / rect.width;   // -0.5 → 0.5
+    const dy = (e.clientY - cy) / rect.height;
 
-        stars.push({
-            // base position (pixels)
-            bx: Math.random() * canvas.width,
-            by: Math.random() * canvas.height,
-            // current render position (follows base + mouse offset)
-            x: 0,
-            y: 0,
-            radius,
-            color: isGreen ? GREEN : WHITE,
-            alpha: 0.25 + Math.random() * 0.65,
-            // slow autonomous drift
-            driftAngle: Math.random() * Math.PI * 2,
-            driftSpeed: 0.08 + Math.random() * 0.12,
-            // twinkle
-            twinkleSpeed: 0.005 + Math.random() * 0.015,
-            twinkleOffset: Math.random() * Math.PI * 2,
-            // how strongly this star responds to the mouse (0.02 – 0.12)
-            mouseFactor: 0.02 + Math.random() * 0.10,
-            // influence radius in px (stars react only when mouse is within this)
-            influenceRadius: 120 + Math.random() * 160,
+    visual.style.transform = `translate(${dx * 14}px, ${dy * 10}px)`;
+  });
+  hero.addEventListener('mouseleave', () => {
+    visual.style.transform = '';
+  });
+})();
+
+
+/* ── 12. TEAM CARD STAGGER REVEAL ── */
+(function initTeamStagger() {
+  const cards = document.querySelectorAll('.tm-card');
+  if (!cards.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        cards.forEach((c, i) => {
+          setTimeout(() => {
+            c.style.opacity = '1';
+            c.style.transform = 'none';
+          }, i * 70);
         });
-    }
-
-    // Mouse tracking (in canvas-local coords)
-    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-    let targetMouse = { x: canvas.width / 2, y: canvas.height / 2 };
-    let mouseInside = false;
-
-    heroSection.addEventListener('mousemove', (e) => {
-        const rect = heroSection.getBoundingClientRect();
-        targetMouse.x = e.clientX - rect.left;
-        targetMouse.y = e.clientY - rect.top;
-        mouseInside = true;
+        io.disconnect();
+      }
     });
-    heroSection.addEventListener('mouseleave', () => { mouseInside = false; });
+  }, { threshold: 0.1 });
 
-    let lastTime = 0;
+  cards.forEach(c => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(18px)';
+    c.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1), background .25s, border-color .25s';
+  });
 
-    function draw(ts) {
-        const dt = Math.min(ts - lastTime, 50); // cap delta to avoid jumps
-        lastTime = ts;
-
-        // Smooth mouse interpolation
-        const lerpSpeed = mouseInside ? 0.06 : 0.02;
-        mouse.x += (targetMouse.x - mouse.x) * lerpSpeed;
-        mouse.y += (targetMouse.y - mouse.y) * lerpSpeed;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        for (const s of stars) {
-            // Autonomous slow drift
-            s.driftAngle += s.driftSpeed * 0.01;
-            s.bx += Math.cos(s.driftAngle) * s.driftSpeed * 0.04;
-            s.by += Math.sin(s.driftAngle) * s.driftSpeed * 0.04;
-
-            // Wrap around edges
-            if (s.bx < -10) s.bx = canvas.width + 10;
-            if (s.bx > canvas.width + 10) s.bx = -10;
-            if (s.by < -10) s.by = canvas.height + 10;
-            if (s.by > canvas.height + 10) s.by = -10;
-
-            // Mouse repulsion / attraction
-            const dx = mouse.x - s.bx;
-            const dy = mouse.y - s.by;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            let offsetX = 0, offsetY = 0;
-            if (dist < s.influenceRadius && dist > 0) {
-                // Stars gently drift TOWARD cursor (same feel as the Hazel site)
-                const strength = (1 - dist / s.influenceRadius) * s.mouseFactor * 60;
-                offsetX = (dx / dist) * strength;
-                offsetY = (dy / dist) * strength;
-            }
-
-            s.x = s.bx + offsetX;
-            s.y = s.by + offsetY;
-
-            // Twinkle: pulse alpha
-            const twinkle = Math.sin(ts * s.twinkleSpeed + s.twinkleOffset);
-            const alpha = Math.max(0.08, s.alpha + twinkle * 0.25);
-
-            // Draw dot
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-
-            // Larger green dots get a subtle glow via radial gradient
-            if (s.radius > 2.5 && s.color === GREEN) {
-                const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.radius * 3);
-                grad.addColorStop(0,   `rgba(${s.color}, ${alpha})`);
-                grad.addColorStop(0.4, `rgba(${s.color}, ${alpha * 0.5})`);
-                grad.addColorStop(1,   `rgba(${s.color}, 0)`);
-                // Draw glow halo first
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.radius * 3, 0, Math.PI * 2);
-                ctx.fillStyle = grad;
-                ctx.fill();
-                ctx.restore();
-                // Then the solid dot
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-            }
-
-            ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
-            ctx.fill();
-        }
-
-        requestAnimationFrame(draw);
-    }
-
-    requestAnimationFrame(draw);
-}
-
-
-
-
-
-        });
+  const panel = document.querySelector('.team-panel');
+  if (panel) io.observe(panel);
+})();
